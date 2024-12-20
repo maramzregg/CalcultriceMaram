@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>آلة حاسبة علمية</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .calculator {
+            background: linear-gradient(145deg, #e6e6e6, #ffffff);
+            border-radius: 20px;
+            box-shadow: 20px 20px 40px #d9d9d9, -20px -20px 40px #ffffff;
+            width: 350px;
+            padding: 20px;
+        }
+        .display {
+            width: 100%;
+            height: 60px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border: none;
+            text-align: right;
+            font-size: 24px;
+            padding: 10px;
+            box-shadow: inset 5px 5px 10px #d1d1d1, inset -5px -5px 10px #ffffff;
+            background: #f0f0f0;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .button {
+            background: linear-gradient(145deg, #e6e6e6, #ffffff);
+            border-radius: 10px;
+            border: none;
+            box-shadow: 5px 5px 10px #d9d9d9, -5px -5px 10px #ffffff;
+            font-size: 18px;
+            height: 60px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .button:active {
+            box-shadow: inset 5px 5px 10px #d9d9d9, inset -5px -5px 10px #ffffff;
+        }
+        .button.scientific {
+            font-size: 14px;
+        }
+        .button.equal {
+            background: #4caf50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" id="display" class="display" disabled>
+        <div class="buttons">
+            <!-- Standard operations -->
+            <button class="button" onclick="appendNumber('7')">7</button>
+            <button class="button" onclick="appendNumber('8')">8</button>
+            <button class="button" onclick="appendNumber('9')">9</button>
+            <button class="button" onclick="setOperation('/')">÷</button>
+
+            <button class="button" onclick="appendNumber('4')">4</button>
+            <button class="button" onclick="appendNumber('5')">5</button>
+            <button class="button" onclick="appendNumber('6')">6</button>
+            <button class="button" onclick="setOperation('*')">×</button>
+
+            <button class="button" onclick="appendNumber('1')">1</button>
+            <button class="button" onclick="appendNumber('2')">2</button>
+            <button class="button" onclick="appendNumber('3')">3</button>
+            <button class="button" onclick="setOperation('-')">−</button>
+
+            <button class="button" onclick="appendNumber('0')">0</button>
+            <button class="button" onclick="appendNumber('.')">.</button>
+            <button class="button equal" onclick="calculate()">=</button>
+            <button class="button" onclick="setOperation('+')">+</button>
+
+            <!-- Scientific operations -->
+            <button class="button scientific" onclick="performScientific('sqrt')">√</button>
+            <button class="button scientific" onclick="performScientific('pow')">x²</button>
+            <button class="button scientific" onclick="performScientific('sin')">sin</button>
+            <button class="button scientific" onclick="performScientific('cos')">cos</button>
+            
+            <button class="button scientific" onclick="performScientific('tan')">tan</button>
+            <button class="button scientific" onclick="performScientific('log')">log</button>
+            <button class="button scientific" onclick="performScientific('exp')">exp</button>
+            <button class="button scientific" onclick="clearDisplay()">C</button>
+        </div>
+    </div>
+
+    <script>
+        let currentOperation = null;
+        let firstOperand = '';
+        let secondOperand = '';
+
+        const display = document.getElementById('display');
+
+        function appendNumber(number) {
+            display.value += number;
+        }
+
+        function setOperation(operation) {
+            if (display.value === '') return;
+            firstOperand = display.value;
+            currentOperation = operation;
+            display.value = '';
+        }
+
+        function calculate() {
+            if (currentOperation && firstOperand !== '') {
+                secondOperand = display.value;
+                const result = eval(`${firstOperand} ${currentOperation} ${secondOperand}`);
+                display.value = result;
+                currentOperation = null;
+                firstOperand = '';
+                secondOperand = '';
+            }
+        }
+
+        function performScientific(func) {
+            const value = parseFloat(display.value);
+            let result;
+
+            switch (func) {
+                case 'sqrt':
+                    result = Math.sqrt(value);
+                    break;
+                case 'pow':
+                    result = Math.pow(value, 2);
+                    break;
+                case 'sin':
+                    result = Math.sin(value * Math.PI / 180);
+                    break;
+                case 'cos':
+                    result = Math.cos(value * Math.PI / 180);
+                    break;
+                case 'tan':
+                    result = Math.tan(value * Math.PI / 180);
+                    break;
+                case 'log':
+                    result = Math.log10(value);
+                    break;
+                case 'exp':
+                    result = Math.exp(value);
+                    break;
+                default:
+                    result = value;
+            }
+
+            display.value = result;
+        }
+
+        function clearDisplay() {
+            display.value = '';
+            firstOperand = '';
+            secondOperand = '';
+            currentOperation = null;
+        }
+    </script>
+</body>
+</html>
